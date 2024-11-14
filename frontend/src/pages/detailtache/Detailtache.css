@@ -1,0 +1,22 @@
+.divgrandicon{
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+}
+.retour a{
+    cursor: pointer;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+}
+.retour a:hover{
+    background-color: #cfe2ff;
+}
+/* #detailleftside{
+    height: 600px;
+    width: 500px;
+} */
+/* #detailrightside */
+.detailicon{
+    font-size: 80pt;
+}

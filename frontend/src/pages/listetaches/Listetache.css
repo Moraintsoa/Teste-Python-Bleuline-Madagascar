@@ -1,0 +1,10 @@
+.logout{
+    display: block;
+    height: 70px;
+    width: 70px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.logout:hover{
+    background-color: #f4b9b9;
+}

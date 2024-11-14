@@ -1,0 +1,7 @@
+#root{
+  display: flex;
+  height: 100vh;
+}
+body{
+  background-color: #f2f2f2;
+}

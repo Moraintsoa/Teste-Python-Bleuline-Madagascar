@@ -1,0 +1,68 @@
+i.bi{
+    color: #605C5C;
+    /* color: #7E7C7C; */
+    
+}
+.greenback{
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+    background-color: #B6F6E7;
+}
+i.iconelist{
+    color: #186F5A;
+    font-size: 50pt;
+}
+.formetat{
+    /* width: 90px; */
+} 
+.tachesfait{
+    background-color: #B6F6E7;
+    color: #186F5A;
+}
+.tachesnonfait{
+    background-color: #f6b6bf;
+    color: #6f1822;
+}
+#Main{
+    height: 100vh;
+    overflow: scroll;
+}
+div.headermain{
+    height: 250px;
+}
+h5.d-flex{
+    margin: 0;
+}
+div.items{
+    color: #605C5C;
+    margin-bottom: 20px;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+div.items:hover{
+    box-shadow: 2px 4px 10px rgba(0,0,0,0.1);
+}
+div.items div .container-icon{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+}
+div.items div i.bi-pin-angle{
+    color: #EA1717;
+}
+.bi-three-dots-vertical{
+    text-align: center;
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+}
+.threedotsAndflech{
+    cursor: pointer;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+}
+.threedotsAndflech:hover{
+    background-color: #cfe2ff;
+}
