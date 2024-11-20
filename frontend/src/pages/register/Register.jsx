@@ -1,38 +1,23 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { register } from '../../endpoint/api';
 
 export const Register = () => {
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordConfirmation, setPasswordConfirmation] = useState('');
-    const [error, setError] = useState('');
+    const nav = useNavigate()
+    // const [error, setError] = useState('');
 
 
-    const handleRegister = async (e) => {
-        e.preventDefault();
-
-        if (password !== passwordConfirmation) {
-            setError('Les mots de passe ne correspondent pas.');
-            return;
-        }
-
-        try {
-            const response = await axios.post('http://127.0.0.1:8000/userapi/register/', {
-                username: username,
-                password: password,
-                password_confirm: passwordConfirmation,
-            });
-            console.log('Inscription réussie', response.data);
-            window.location.href = "/";
-        } catch (error) {
-            setError('Erreur lors de l\'inscription, veuillez réessayer.');
-            console.error(error);
-        }
+    const handleRegister = async () => {
+            await register(username, password, email).then(()=>{nav('/accueil')})
     };
 
     return (
-        <div className="Login d-flex flex-column m-auto py-5 px-4 shadow-sm border border-secondary-subtle rounded">
+        <div className="Login d-flex flex-column m-auto px-4 shadow-sm border border-secondary-subtle rounded">
             <div className='d-flex justify-content-center m-auto my-3'>
                 <img src={'./img/logo.jpg'} alt="Logo" className="img-fluid" />
             </div>
@@ -48,6 +33,18 @@ export const Register = () => {
                         onChange={(e) => setUsername(e.target.value)}
                     />
                     <label htmlFor="Pseudo">Pseudo</label>
+                </div>
+
+                <div className="form-floating mb-3">
+                    <input
+                        type="email"
+                        className="form-control"
+                        id="Email"
+                        placeholder="Pseudo"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <label htmlFor="Email">Email</label>
                 </div>
 
                 <div className="form-floating mb-3">
@@ -76,18 +73,18 @@ export const Register = () => {
                 </div>
 
 
-                {error && <div className="alert alert-danger">{error}</div>}
+                {/* {error && <div className="alert alert-danger">{error}</div>} */}
 
                 <div className="d-flex m-1 justify-content-end">
                     <small className="m-0">Vous avez déjà un compte? <a href="/">Cliquer ici</a></small>
                 </div>
 
 
-                <NavLink to="/" className={'d-grid mt-4 mb-4'}>
+                <div className={'d-grid mt-4 mb-4'}>
                     <button className="btn btn-primary" type="button" onClick={handleRegister}>
                         Enregistrer
                     </button>
-                </NavLink>
+                </div>
             </div>
         </div>
     );

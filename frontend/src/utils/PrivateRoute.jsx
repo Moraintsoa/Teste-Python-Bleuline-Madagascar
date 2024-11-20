@@ -1,44 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { user_connected } from '../endpoint/api';
 
-// Composant pour protéger les routes
-const PrivateRoute = ({ element: Component, ...rest }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(null);
-    const [loading, setLoading] = useState(true);
+const PrivateRoute = ({ children }) => {
+    const [isAuthenticated, setIsAuthenticated] = useState(null); // null: en attente, true: connecté, false: non connecté
+    const navigate = useNavigate();
 
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                // Vérifier l'authentification côté serveur
-                const response = await axios.get('http://localhost:8000/api/auth/verify', {
-                    withCredentials: true, // Assure que le cookie de session est envoyé
-                });
-
-                // Si l'utilisateur est authentifié
-                if (response.status === 200) {
+                const { name, id } = await user_connected();
+                if (name && id) {
                     setIsAuthenticated(true);
                 } else {
                     setIsAuthenticated(false);
+                    navigate('/');
                 }
             } catch (error) {
-                // Si la vérification échoue, l'utilisateur n'est pas authentifié
                 setIsAuthenticated(false);
-            } finally {
-                setLoading(false);
+                navigate('/');
             }
         };
-
         checkAuth();
-    }, []);
+    }, [navigate]);
 
-    // Affiche un loader tant que la vérification n'est pas terminée
-    if (loading) {
+    if (isAuthenticated === null) {
+        // En attente de la vérification
         return <div>Loading...</div>;
     }
 
-    // Si l'utilisateur est authentifié, affiche le composant
-    return isAuthenticated ? Component : <Navigate to="/" />;
+    return isAuthenticated ? children : null;
 };
 
 export default PrivateRoute;

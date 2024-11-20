@@ -1,28 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { createContext, useEffect, useState } from 'react';
 import Items from '../../components/items/Items';
 import Creationtache from '../../components/creationtache/Creationtache';
 import Filtrebar from '../../components/filtrebar/Filtrebar';
-import { NavLink } from 'react-router-dom';
-import { useAuth } from '../../utils/authContext'; // Importe le contexte d'authentification
+import { NavLink, useNavigate } from 'react-router-dom'
+
 import './Listetache.css';
+import { listetaches, logout, user_connected, user_list } from '../../endpoint/api';
+
 
 export default function Listetache() {
-    const { logout } = useAuth(); // Récupère la fonction logout du contexte
     const [taches, setTaches] = useState([]);
     const [recherche, setRecherche] = useState('');
     const [select, setSelect] = useState('Tout');
+    const [User_name, setUsername] = useState();
+    const [User_id, setUserid] = useState();
+    const [isadmin, setIsadmin]=useState()
+    const naviger = useNavigate()
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/taches/')
-            .then((reponse) => { setTaches(reponse.data); })
-            .catch(err => { console.error('Erreur : ', err); });
+        const fetchTaches = async () => {
+            const les_taches = await listetaches()
+            const { name, id } = await user_connected()
+            const is_Admin = await user_list()
+            setIsadmin(is_Admin)
+            setUsername(name)
+            setUserid(id)
+            setTaches(les_taches)
+        }
+        fetchTaches()
     }, []);
-
+    console.log(taches)
+    console.log(typeof (taches))
     const newTaches = select === 'Tout' ? taches : taches.filter((x) => x.completed == select);
 
-    const handleLogout = () => {
-        logout(); // Appelle la fonction logout pour déconnecter l'utilisateur
+    const handleLogout = async () => {
+        const successLogout = await logout()
+        if (successLogout) {
+            naviger('/')
+        }
     };
 
     return (
@@ -35,15 +50,19 @@ export default function Listetache() {
                     <h3>Liste des Tâches</h3>
                     <p className='text-secondary'>Ce sont des listes des choses qu'il faut faire</p>
                     <div className='d-flex justify-content-between'>
-                        <Creationtache />
+                        <Creationtache userId={User_id} />
                         <button type="button" className='btn btn-primary' data-bs-toggle='modal' data-bs-target='#creationtachemodal'>Créer une tâches</button>
                     </div>
                 </div>
-                <div className="ms-auto me-4">
-                    {/* Bouton de déconnexion */}
-                    <button onClick={handleLogout} className="logout d-flex justify-content-center align-items-center">
-                        <i className="bi bi-power fs-1"></i>
-                    </button>
+                <div className="ms-auto me-4 d-flex gap-4">
+                    <div className='d-flex justify-content-center align-items-center gap-1'>
+                        <h4>{User_name}</h4>
+                        <NavLink to={'admin'}>{isadmin?'(Admin)':''}</NavLink>
+                        <i className='bi bi-circle-fill text-success'></i>
+                    </div>
+                    <div onClick={handleLogout} className="logout d-flex justify-content-center align-items-center">
+                        <i className="bi bi-power fs-3"></i>
+                    </div>
                 </div>
             </div>
             <Filtrebar recherche={recherche} setRecherche={setRecherche} select={select} setSelect={setSelect} />

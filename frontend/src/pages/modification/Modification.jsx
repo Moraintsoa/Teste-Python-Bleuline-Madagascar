@@ -1,35 +1,30 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate, useParams } from 'react-router-dom'
+import { detailtaches, taches_modif,user_connected } from '../../endpoint/api'
 
 export default function Modification({ }) {
     const [updateTitre, setUpdateTitre] = useState('')
     const [updatedescription, setUpdatedescription] = useState('')
+    const [completed, setCompleted] = useState()
     const [updateDate, setUpdateDate] = useState('')
     const [updateHeure, setUpdateHeure] = useState('')
+    const [userId, setUserId] = useState()
     const { id } = useParams()
     const navigate = useNavigate()
     const LaTache = async () => {
-        const { data } = await axios.get(`http://127.0.0.1:8000/api/taches/${id}`)
+        const data = await detailtaches(id)
+        const user = await user_connected()
+        setUserId(user.id)
         setUpdateTitre(data.title)
         setUpdatedescription(data.description)
+        setCompleted(data.completed)
         setUpdateDate(data.date_echeance)
         setUpdateHeure(data.heure_echeance)
     }
     const Modifier = async () => {
-        let champs = new FormData()
-        champs.append('title', updateTitre)
-        champs.append('description', updatedescription)
-        champs.append('date_echeance', updateDate)
-        champs.append('heure_echeance', updateHeure)
-        await axios({
-            method: 'PUT',
-            url: `http://127.0.0.1:8000/api/taches/${id}/`,
-            data: champs
-        }).then((reponse) => {
-            console.log(reponse.data)
-            navigate('/accueil')
-        })
+        await taches_modif(id, updateTitre, updatedescription,completed, updateDate, updateHeure, userId)
+                .then(()=>{navigate('/accueil')})
     }
     useEffect(() => {
         LaTache()

@@ -1,10 +1,11 @@
 import axios from 'axios'
 import React from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
+import { deletetache } from '../../endpoint/api'
 
 export default function Items({ icon, completed, titre, id, ajours, setAjours }) {
     const Supprimertaches = async (id) => {
-        await axios.delete(`http://127.0.0.1:8000/api/taches/${id}/`)
+        await deletetache(id)
         setAjours(ajours.filter((p)=>p.id !== id))
     }
     return (

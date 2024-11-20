@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 export default function Confirmation({ id_tache, titre_tache }) {
     const { id } = useParams()
     const Supprimertaches = async (id) => {
-        await axios.delete(`http://127.0.0.1:8000/api/taches/${id}/`)
+        await axios.delete(`http://127.0.0.1:8000/taches/${id}/`)
     }
     return (
         <div className='modal fade' id='suppressiontachemodal' data-bs-backdrop='static' data-bs-keyboard='false' tabIndex='-1' aria-labelledby='statickdropLabel' aria-hidden='true'>

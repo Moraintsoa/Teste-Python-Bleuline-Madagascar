@@ -1,40 +1,36 @@
 import { useEffect, useState } from 'react'
 import './Detailtache.css'
-import { NavLink, useParams } from 'react-router-dom'
+import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
+import { detailtaches,taches_modif,user_connected } from '../../endpoint/api'
 
 export default function Detailtache() {
 
-    const [tache, setTache] = useState("")
-    const [completed, setCompleted] = useState(tache.completed)
+    const [tache, setTache] = useState([])
+    const [completed, setCompleted] = useState()
     const [updateTitre, setUpdateTitre] = useState('')
     const [updatedescription, setUpdatedescription] = useState('')
     const [updateDate, setUpdateDate] = useState('')
     const [updateHeure, setUpdateHeure] = useState('')
+    const [userId, setUserId] = useState()
     const { id } = useParams()
+    const navigate = useNavigate()
     const LaTache = async () => {
-        const { data } = await axios.get(`http://127.0.0.1:8000/api/taches/${id}/`)
+        const data = await detailtaches(id)
+        const user = await user_connected()
         setTache(data)
+        setUserId(user.id)
+        setCompleted(data.completed)
         setUpdateTitre(data.title)
         setUpdatedescription(data.description)
         setUpdateDate(data.date_echeance)
         setUpdateHeure(data.heure_echeance)
     }
-    const Modifiers = async () => {
-        let champs = new FormData()
-        champs.append('title', updateTitre)
-        champs.append('description', updatedescription)
-        champs.append('date_echeance', updateDate)
-        champs.append('heure_echeance', updateHeure)
-        champs.append('completed', completed)
-        await axios({
-            method: 'PUT',
-            url: `http://127.0.0.1:8000/api/taches/${id}/`,
-            data: champs
-        }).then((reponse) => {
-            console.log(reponse.data)
-            window.location.href = `/accueil/detail/${id}`;
-        })
+    const Modifier = async () => {
+        await taches_modif(id, updateTitre, updatedescription, completed, updateDate, updateHeure, userId)
+                .then(()=>{
+                    window.location.href = `/accueil/detail/${id}`
+                })
     }
     useEffect(() => {
         LaTache()
@@ -75,11 +71,13 @@ export default function Detailtache() {
                 <div className='d-flex flex-column input-group'>
                     <div className="form-check form-switch d-flex justify-content-start align-items-center rounded border border-secondary-subtle mb-4 my-1 py-3">
                         <input value={completed} checked={completed} onChange={(e) => setCompleted(e.target.checked)} role='switch' type="checkbox" className='form-check-input mx-2' name="etatddutache" id="tache_non_fait" />
-                        <label htmlFor="tache_non_fait">Marquer ce tâches comme terminé ?</label>
+                        <label htmlFor="tache_non_fait">
+                            { completed ? 'Ce tâtce est marquée comme terminée !':'Marquer ce tâche comme terminé ?'}
+                        </label>
                     </div>
                 </div>
                 <div className='d-flex mt-auto ms-auto'>
-                    <button type="button" onClick={Modifiers} className='btn btn-outline-success'>Appliquer</button>
+                    <button type="button" onClick={Modifier} className='btn btn-outline-success'>Appliquer</button>
                 </div>
             </div>
         </div>
